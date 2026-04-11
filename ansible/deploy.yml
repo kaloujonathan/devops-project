@@ -1,0 +1,19 @@
+- name: Deploy Flask App
+  hosts: localhost
+  become: yes
+
+  tasks:
+
+    - name: Install Python
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install requirements
+      pip:
+        requirements:  /home/jojo/devops-projets/requirements.txt
+
+    - name: Run app
+      shell: nohup python3 ../app.py > app.log 2>&1 &

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
+# Base de données en mémoire (simple pour TP)
 reservations = []
 
 @app.route('/')
@@ -18,11 +19,18 @@ def list_page():
 
 @app.route('/add', methods=['POST'])
 def add():
-    reservations.append({
-        "name": request.form['name'],
-        "car": request.form['car'],
-        "date": request.form['date']
-    })
+    name = request.form.get('name')
+    car = request.form.get('car')
+    date = request.form.get('date')
+
+    # petite validation propre
+    if name and car and date:
+        reservations.append({
+            "name": name,
+            "car": car,
+            "date": date
+        })
+
     return redirect('/list')
 
 if __name__ == "__main__":
