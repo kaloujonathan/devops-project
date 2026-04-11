@@ -3,13 +3,7 @@ pipeline {
 
     stages {
 
-        stage('Clonage GitHub') {
-            steps {
-                git 'https://github.com/kaloujonathan/devops-projets.git'
-            }
-        }
-
-        stage('Setup environment') {
+        stage('Install dependencies') {
             steps {
                 sh '''
                 python3 -m venv venv
@@ -19,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Security check (basic)') {
+        stage('Security scan') {
             steps {
                 sh '''
                 venv/bin/pip install bandit safety
@@ -29,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Run App') {
+        stage('Run Application') {
             steps {
                 sh '''
                 nohup venv/bin/python app.py &
