@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+<h2>Liste des réservations</h2>
+
+<ul>
+{% for r in reservations %}
+    <li>
+        {{ r.name }} | {{ r.car }} | {{ r.date }}
+    </li>
+{% endfor %}
+</ul>
+
+</div>
+
+{% endblock %}

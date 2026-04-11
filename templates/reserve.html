@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+<h2>Réserver une voiture</h2>
+
+<form method="POST" action="/add">
+    <input type="text" name="name" placeholder="Nom"><br><br>
+    <input type="text" name="car" placeholder="Voiture"><br><br>
+    <input type="date" name="date"><br><br>
+    <button type="submit">Réserver</button>
+</form>
+
+</div>
+
+{% endblock %}

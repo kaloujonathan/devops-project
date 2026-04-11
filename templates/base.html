@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<nav>
+    <div>🚗 Car Rental</div>
+    <div>
+        <a href="/">Accueil</a>
+        <a href="/reserve">Réserver</a>
+        <a href="/list">Liste</a>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
