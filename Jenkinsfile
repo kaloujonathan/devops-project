@@ -1,7 +1,17 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     stages {
+
+        stage('Clone repo') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Install dependencies') {
             steps {
@@ -13,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Security analysis') {
+        stage('Security scan') {
             steps {
                 sh '''
                 venv/bin/pip install bandit safety
@@ -23,21 +33,12 @@ pipeline {
             }
         }
 
-        stage('Run application') {
+        stage('Run app') {
             steps {
                 sh '''
-                nohup venv/bin/python app.py > app.log 2>&1 &
+                nohup venv/bin/python app.py > output.log 2>&1 &
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline exécuté avec succès ✅'
-        }
-        failure {
-            echo 'Pipeline échoué ❌'
         }
     }
 }
