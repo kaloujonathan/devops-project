@@ -2,16 +2,10 @@ pipeline {
     agent any
 
     triggers {
-        githubPush()
+        pollSCM('* * * * *')
     }
 
     stages {
-
-        stage('Clone repo') {
-            steps {
-                checkout scm
-            }
-        }
 
         stage('Install dependencies') {
             steps {
@@ -27,16 +21,16 @@ pipeline {
             steps {
                 sh '''
                 venv/bin/pip install bandit safety
-                venv/bin/bandit -r . || true
-                venv/bin/safety check || true
+                bandit -r . || true
+                safety check || true
                 '''
             }
         }
 
-        stage('Run app') {
+        stage('Run Application') {
             steps {
                 sh '''
-                nohup venv/bin/python app.py > output.log 2>&1 &
+                nohup venv/bin/python app.py &
                 '''
             }
         }
