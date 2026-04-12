@@ -2,10 +2,16 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('* * * * *')
+        githubPush()
     }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Install dependencies') {
             steps {
@@ -30,9 +36,15 @@ pipeline {
         stage('Run Application') {
             steps {
                 sh '''
-                nohup venv/bin/python app.py &
+                nohup venv/bin/python app.py > app.log 2>&1 &
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline terminé"
         }
     }
 }
