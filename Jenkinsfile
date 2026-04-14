@@ -33,18 +33,21 @@ pipeline {
             }
         }
 
-        stage('Run Application') {
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                nohup venv/bin/python app.py > app.log 2>&1 &
+                docker build -t flask-app .
                 '''
             }
         }
-    }
 
-    post {
-        always {
-            echo "Pipeline terminé"
+        stage('Deploy with Ansible') {
+            steps {
+                sh '''
+                cd ansible
+                ansible-playbook -i inventory deploy.yml --ask-become-pass
+                '''
+            }
         }
     }
 }
