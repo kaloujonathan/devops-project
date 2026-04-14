@@ -1,15 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        timeout(time: 10, unit: 'MINUTES')
-        disableConcurrentBuilds()
-    }
-
-    triggers {
-        githubPush()
-    }
-
     stages {
 
         stage('Checkout') {
@@ -18,23 +9,22 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Analyse SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
                     export PATH=$PATH:/opt/sonar-scanner/bin
                     rm -rf .scannerwork
-
                     /opt/sonar-scanner/bin/sonar-scanner \
                     -Dproject.settings=.sonar-project.properties \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN \
+                    -Dsonar.login=$SONAR_TOKEN \
                     -Dsonar.working.directory=/tmp/sonar
                     '''
                 }
             }
         }
 
-        stage('Install dependencies') {
+        stage('Installer les dépendances') {
             steps {
                 sh '''
                 python3 -m venv venv
@@ -44,17 +34,18 @@ pipeline {
             }
         }
 
-        stage('Security scan') {
+        stage('Analyse de sécurité') {
             steps {
                 sh '''
                 venv/bin/pip install bandit safety
-                bandit -r . || true
-                safety check || true
+
+                venv/bin/bandit -r . || true
+                venv/bin/safety check || true
                 '''
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker') {
             steps {
                 sh '''
                 docker build -t flask-app .
@@ -62,7 +53,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with Ansible') {
+        stage('Déploiement Ansible') {
             steps {
                 sh '''
                 cd ansible
@@ -71,4 +62,4 @@ pipeline {
             }
         }
     }
-}            
+}
