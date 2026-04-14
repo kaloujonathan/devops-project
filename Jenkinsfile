@@ -18,7 +18,7 @@ pipeline {
 
                     /opt/sonar-scanner/bin/sonar-scanner \
                     -Dproject.settings=.sonar-project.properties \
-                    -Dsonar.token=$SONAR_TOKEN \
+                    -Dsonar.login=$SONAR_TOKEN \
                     -Dsonar.working.directory=/tmp/sonar
                     '''
                 }
