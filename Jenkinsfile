@@ -5,6 +5,11 @@ pipeline {
         githubPush()
     }
 
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -22,8 +27,10 @@ pipeline {
                     -Dsonar.projectKey=devops-project \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN \
-                    -Dsonar.qualitygate.wait=true
+                    -Dsonar.token=$SONAR_AUTH_TOKEN \
+                    -Dsonar.qualitygate.wait=true \
+                    -Dsonar.sourceEncoding=UTF-8 \
+                    -Dsonar.exclusions=venv/**,**/__pycache__/**,**/*.pyc
                     '''
                 }
             }
