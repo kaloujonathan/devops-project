@@ -22,7 +22,8 @@ pipeline {
                     -Dsonar.projectKey=devops-project \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    -Dsonar.login=$SONAR_AUTH_TOKEN \
+                    -Dsonar.qualitygate.wait=true
                     '''
                 }
             }
