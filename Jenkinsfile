@@ -17,11 +17,12 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
+                    export PATH=$PATH:/opt/sonar-scanner/bin
                     sonar-scanner \
                     -Dsonar.projectKey=devops-project \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.login=$SONAR_TOKEN
+                    -Dsonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
             }
