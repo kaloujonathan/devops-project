@@ -22,9 +22,13 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                    sonar-scanner \
+                    export PATH=$PATH:/opt/sonar-scanner/bin
+                    rm -rf .scannerwork
+
+                    /opt/sonar-scanner/bin/sonar-scanner \
                     -Dproject.settings=.sonar-project.properties \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    -Dsonar.login=$SONAR_AUTH_TOKEN \
+                    -Dsonar.working.directory=/tmp/sonar
                     '''
                 }
             }
@@ -52,7 +56,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t flask-app .'
+                sh '''
+                docker build -t flask-app .
+                '''
             }
         }
 
@@ -65,4 +71,4 @@ pipeline {
             }
         }
     }
-}
+}            
