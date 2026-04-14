@@ -1,19 +1,14 @@
-- name: Deploy Flask App
+- name: Deploy Flask App with Docker
   hosts: localhost
   become: yes
 
   tasks:
 
-    - name: Install Python
-      apt:
-        name:
-          - python3
-          - python3-pip
-        state: present
+    - name: Stop ancien container
+      shell: docker rm -f flask-app || true
 
-    - name: Install requirements
-      pip:
-        requirements:  /home/jojo/devops-projets/requirements.txt
+    - name: Build image Docker
+      shell: docker build -t flask-app ..
 
-    - name: Run app
-      shell: nohup python3 ../app.py > app.log 2>&1 &
+    - name: Run container
+      shell: docker run -d -p 5000:5000 --name flask-app flask-app
