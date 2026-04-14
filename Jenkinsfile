@@ -1,13 +1,13 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        disableConcurrentBuilds()
     }
 
-    options {
-        disableConcurrentBuilds()
-        timeout(time: 20, unit: 'MINUTES')
+    triggers {
+        githubPush()
     }
 
     stages {
@@ -22,15 +22,9 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                    export PATH=$PATH:/opt/sonar-scanner/bin
                     sonar-scanner \
-                    -Dsonar.projectKey=devops-project \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.token=$SONAR_AUTH_TOKEN \
-                    -Dsonar.qualitygate.wait=true \
-                    -Dsonar.sourceEncoding=UTF-8 \
-                    -Dsonar.exclusions=venv/**,**/__pycache__/**,**/*.pyc
+                    -Dproject.settings=.sonar-project.properties \
+                    -Dsonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
             }
@@ -58,9 +52,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh '''
-                docker build -t flask-app .
-                '''
+                sh 'docker build -t flask-app .'
             }
         }
 
