@@ -15,9 +15,10 @@ pipeline {
                     sh '''
                     export PATH=$PATH:/opt/sonar-scanner/bin
                     rm -rf .scannerwork
+
                     /opt/sonar-scanner/bin/sonar-scanner \
                     -Dproject.settings=.sonar-project.properties \
-                    -Dsonar.login=$SONAR_TOKEN \
+                    -Dsonar.token=$SONAR_TOKEN \
                     -Dsonar.working.directory=/tmp/sonar
                     '''
                 }
