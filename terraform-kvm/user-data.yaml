@@ -1,0 +1,17 @@
+#cloud-config
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    shell: /bin/bash
+    plain_text_passwd: ubuntu
+    lock_passwd: false
+
+ssh_pwauth: true
+
+chpasswd:
+  expire: false
+
+package_update: true
+packages:
+  - qemu-guest-agent
