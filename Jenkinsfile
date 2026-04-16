@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     options {
-        // On met 15 minutes pour être large, mais avec le cache ça prendra 2 minutes
-        timeout(time: 15, unit: 'MINUTES') 
+        timeout(time: 20, unit: 'MINUTES')
         disableConcurrentBuilds()
     }
 
@@ -12,6 +11,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -23,8 +23,7 @@ pipeline {
                 sh '''
                 python3 -m venv venv
                 venv/bin/pip install --upgrade pip
-                # Utilisation du cache pour aller 10x plus vite
-                venv/bin/pip install --cache-dir $HOME/.pip-cache -r requirements.txt
+                venv/bin/pip install -r requirements.txt
                 '''
             }
         }
