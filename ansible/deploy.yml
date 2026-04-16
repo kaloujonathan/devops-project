@@ -1,41 +1,29 @@
----
 - name: Deploy Flask App with Docker
   hosts: vm
   become: true
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
-    - name: Install Docker
+    # On ne met à jour que si Docker manque (gain de temps énorme)
+    - name: Install Docker if missing
       apt:
         name: docker.io
         state: present
+      register: docker_install
+      # On ne le fait que si nécessaire
 
-    - name: Start Docker service
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Stop ancien container (si existe)
+    - name: Stop and remove old container
       shell: "docker stop flask-app || true && docker rm flask-app || true"
 
-    - name: Créer le dossier de l'application sur la VM
+    - name: Create app directory
       file:
         path: /home/ubuntu/flask_app
         state: directory
-        owner: ubuntu
-        group: ubuntu
+        mode: '0755'
 
-    - name: Copier les fichiers essentiels de l'application
+    - name: Copy files
       copy:
         src: "../{{ item }}"
         dest: "/home/ubuntu/flask_app/{{ item }}"
-        owner: ubuntu
-        group: ubuntu
       loop:
         - app.py
         - Dockerfile
@@ -43,7 +31,7 @@
         - static/
         - templates/
 
-    - name: Build image Docker
+    - name: Build Docker image (On-VM)
       shell: "docker build -t flask-app ."
       args:
         chdir: /home/ubuntu/flask_app/
