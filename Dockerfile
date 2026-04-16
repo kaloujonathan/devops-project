@@ -1,11 +1,16 @@
-FROM python:3.10
+FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY . .
+# 1. On copie SEULEMENT le fichier des dépendances
+COPY requirements.txt .
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# 2. On installe les librairies (Cette étape sera mise en cache)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 3. On copie le reste du code (Seulement maintenant !)
+COPY . .
 
 EXPOSE 8000
 
