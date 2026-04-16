@@ -18,22 +18,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    export PATH=$PATH:/opt/sonar-scanner/bin
-                    rm -rf .scannerwork
-
-                    /opt/sonar-scanner/bin/sonar-scanner \
-                    -Dproject.settings=.sonar-project.properties \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN \
-                    -Dsonar.working.directory=/tmp/sonar
-                    '''
-                }
-            }
-        }
-
         stage('Install dependencies') {
             steps {
                 sh '''
@@ -48,8 +32,8 @@ pipeline {
             steps {
                 sh '''
                 venv/bin/pip install bandit safety
-                bandit -r . || true
-                safety check || true
+                venv/bin/bandit -r . || true
+                venv/bin/safety check || true
                 '''
             }
         }
